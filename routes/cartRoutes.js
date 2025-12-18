@@ -5,14 +5,14 @@ import {
     createCart,
     updateCart,
     deleteCart
-} from "../controllers/cartController.js";
+} from "../controllers/cartController.js"
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", getCarts);
-router.get("/:id", getCart);
-router.post("/", createCart);
-router.put("/:id", updateCart);
-router.delete("/:id", deleteCart);
+router.get("/", getCarts)
+router.get("/:id", getCart)
+router.post("/", createCart)
+router.put("/:id", updateCart)
+router.delete("/:id", deleteCart)
 
-export default router;
+export default router
