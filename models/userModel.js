@@ -1,13 +1,28 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
+import bcrypt from "bcrypt"
+import { lowercase, minLength } from "zod";
+import { required } from "zod/mini";
 
 const userSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
+        username: { type: String, required: true,unique:true,trim:true,minLength:3 },
+        email: { type: String, required: true, unique: true,lowercase:true,trim:true },
         age: { type: Number, required: true },
+        role:{type:String,enum:['user','admin'],default:user},
+        password:{type:String,required:true,minLength:5}
     },
     { timestamps: true }
 )
+
+userSchema.pre('save',async function () {
+    if(this.isModified("password")) return
+    const salt=await bcrypt.genSalt(10)
+    this.password=await bcrypt.hash(this.password,salt)
+})
+
+userSchema.methods.comparePassword=async function (givenPassword) {
+    return await bcrypt.compare(givenPassword,this.password)
+}
 
 const User = mongoose.model("User", userSchema);
 
