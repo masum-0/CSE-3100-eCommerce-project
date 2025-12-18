@@ -1,7 +1,7 @@
 import User from "../models/userModel.js"
 import jwt from "jsonwebtoken"
 
-const generateToken=(useId)=>{
+const generateToken=(userId)=>{
     return jwt.sign(
         {userId},
         process.env.JWT_SECRET,

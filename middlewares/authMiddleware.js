@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken"
 import User from "../models/userModel.js"
-import { success } from "zod"
 
 export const authenticate=async(req ,res ,next)=>{
     try{
