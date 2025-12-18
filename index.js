@@ -28,7 +28,8 @@ mongoose.connect(process.env.MONGO_URI).then(()=>{
     console.log(errro)
 });
 
+const  PORT=process.env.PORT || 3000
 
-app.listen(8000,()=>{
-    console.log("Runnning in http://localhost:8000");
+app.listen(PORT,()=>{
+    console.log(`Runnning in http://localhost:${PORT}`);
 });
