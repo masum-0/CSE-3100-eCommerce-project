@@ -11,7 +11,7 @@ const generateToken=(userId)=>{
 
 export const register=async (req,res)=>{
     try{
-        const {username,email,password,role}=req.body
+        const {username,email,age,password,role}=req.body
 
         const alreadyUser=await User.findOne({
             $or:[{email:email.toLowerCase()},{username}]
@@ -28,8 +28,9 @@ export const register=async (req,res)=>{
         const user=await User.create({
             username,
             email,
+            age,
             password,
-            role:"role"||"user"
+            role:"admin"||"user"
         })
 
         const token=generateToken(user._id)
@@ -48,6 +49,7 @@ export const register=async (req,res)=>{
                     id:user._id,
                     username:user.username,
                     email:user.email,
+                    age:user.age,
                     role:user.role
                 },
                 token
@@ -105,6 +107,7 @@ export const login = async (req, res) => {
           id: user._id,
           username: user.username,
           email: user.email,
+          age:user.age,
           role: user.role
         },
         token
