@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 553a7ec06023f68c57f9df7d3bd03666a488f884
 import Cart from "../models/cartModel.js"
 
 export const getCarts = async (req, res) => {
