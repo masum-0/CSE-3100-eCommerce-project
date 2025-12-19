@@ -11,15 +11,27 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "cory": "^2.0.1",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongodb": "^6.20.0",
-    "mongoose": "^8.19.2",
-    "zod": "^4.1.12"
+    "mongoose": "^8.20.4",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+    "nodemon": "^3.1.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Takia294/CSE-3100-eCommerce-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Takia294/CSE-3100-eCommerce-project/issues"
+  },
+  "homepage": "https://github.com/Takia294/CSE-3100-eCommerce-project#readme"
 }

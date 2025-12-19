@@ -1,18 +1,12 @@
 import express from "express"
-import {
-    getUsers,
-    getUser,
-    createUser,
-    updateUser,
-    deleteUser
-} from "../controllers/userController.js";
+import User from "../models/userModel.js"
+import { authenticate } from "../middlewares/authMiddleware.js"
+import { authorizeRoles } from "../middlewares/authorizeMiddleware.js"
 
-const router = express.Router();
+const router = express.Router()
 
-router.get("/", getUsers);
-router.get("/:id", getUser);
-router.post("/", createUser);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+router.get("/", authenticate, authorizeRoles("admin"), async (req, res) => {
+  res.json(await User.find().select("-password"))
+})
 
-export default router;
+export default router
