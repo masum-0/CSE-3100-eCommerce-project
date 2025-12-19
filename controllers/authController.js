@@ -30,7 +30,7 @@ export const register=async (req,res)=>{
             email,
             age,
             password,
-            role:"admin"||"user"
+            role:role||"user"
         })
 
         const token=generateToken(user._id)
