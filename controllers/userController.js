@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+=======
+// file: controllers/userController.js
+>>>>>>> 553a7ec06023f68c57f9df7d3bd03666a488f884
 import User from "../models/userModel.js"
 
+// Get all users
 export const getUsers = async (req, res) => {
   try {
+<<<<<<< HEAD
     const users = await User.find({})
     res.status(200).json(users)
   } catch (error) {
@@ -55,3 +61,15 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+=======
+    const users = await User.find({}).select("-password") // exclude password
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+>>>>>>> 553a7ec06023f68c57f9df7d3bd03666a488f884
