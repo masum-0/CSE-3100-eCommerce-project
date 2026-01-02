@@ -10,3 +10,4 @@ router.get("/profile",authenticate,getProfile)
 router.post("/logout",authenticate,logout)
 
 export default router
+
