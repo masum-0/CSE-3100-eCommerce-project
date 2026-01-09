@@ -6,12 +6,14 @@ import {
   updateOrder,
   deleteOrder,
 } from "../controllers/orderController.js"
+import { validate } from "../middlewares/validateMiddleware.js"
+import { orderSchema } from "../validators/orderValidator.js"
 
 const router = express.Router()
 
 router.get("/", getOrders)
 router.get("/:id", getOrder)
-router.post("/", createOrder)
+router.post("/",validate(orderSchema), createOrder)
 router.put("/:id", updateOrder)
 router.delete("/:id", deleteOrder)
 
