@@ -2,7 +2,17 @@ import User from "../models/userModel.js"
 
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find({})
+    const { username, role } = req.query
+
+    const query = {}
+
+    if (username) {
+      query.username = { $regex: username, $options: "i" }
+    }
+
+    if (role) query.role = role
+
+    const users = await User.find(query).select("-password")
     res.status(200).json(users)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -11,8 +21,8 @@ export const getUsers = async (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const { id } = req.params
-    const user = await User.findById(id)
+    const user = await User.findById(req.params.id).select("-password")
+    if (!user) return res.status(404).json({ message: "User not found" })
     res.status(200).json(user)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -22,7 +32,7 @@ export const getUser = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     const user = await User.create(req.body)
-    res.status(200).json(user)
+    res.status(201).json(user)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -30,12 +40,13 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { id } = req.params
-    const user = await User.findByIdAndUpdate(id, req.body, { new: true })
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ).select("-password")
 
-    if (!user) 
-      return res.status(404).json({ message: "User not found" })
-
+    if (!user) return res.status(404).json({ message: "User not found" })
     res.status(200).json(user)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -44,12 +55,8 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params
-    const user = await User.findByIdAndDelete(id)
-
-    if (!user)
-      return res.status(404).json({ message: "User not found" })
-
+    const user = await User.findByIdAndDelete(req.params.id)
+    if (!user) return res.status(404).json({ message: "User not found" })
     res.status(200).json({ message: "User deleted successfully" })
   } catch (error) {
     res.status(500).json({ message: error.message })
