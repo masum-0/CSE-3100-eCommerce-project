@@ -7,6 +7,8 @@ import productRoutes from "./routes/productRoutes.js"
 import orderRoutes from "./routes/orderRoutes.js"
 import cartRoutes from"./routes/cartRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import reviewRoutes from "./routes/reviewRoutes.js"
+import addressRoutes from "./routes/addressRoutes.js"
 
 dotenv.config()
 const app=express()
@@ -20,6 +22,8 @@ app.use("/api/products", productRoutes)
 app.use("/api/orders", orderRoutes)
 app.use("/api/carts",cartRoutes)
 app.use("/api/auth",authRoutes)
+app.use("/api/reviews", reviewRoutes)
+app.use("/api/addresses", addressRoutes)
 
 
 app.get("/",(req,res)=>{
