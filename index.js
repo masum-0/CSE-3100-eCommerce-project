@@ -9,6 +9,7 @@ import cartRoutes from"./routes/cartRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
 import reviewRoutes from "./routes/reviewRoutes.js"
 import addressRoutes from "./routes/addressRoutes.js"
+import loginAttemptRoutes from "./routes/loginAttemptRoutes.js"
 
 dotenv.config()
 const app=express()
@@ -24,6 +25,7 @@ app.use("/api/carts",cartRoutes)
 app.use("/api/auth",authRoutes)
 app.use("/api/reviews", reviewRoutes)
 app.use("/api/addresses", addressRoutes)
+app.use("/api/login-attempts", loginAttemptRoutes)
 
 
 app.get("/",(req,res)=>{

@@ -1,126 +1,160 @@
 import User from "../models/userModel.js"
 import jwt from "jsonwebtoken"
+import LoginAttempt from "../models/loginAttemptModel.js"
 
-const generateToken=(userId)=>{
-    return jwt.sign(
-        {userId},
-        process.env.JWT_SECRET,
-        {expiresIn:process.env.JWT_EXPIRES_IN}
-    )
+const generateToken = (userId) => {
+  return jwt.sign(
+    { userId },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  )
 }
 
-export const register=async (req,res)=>{
-    try{
-        const {username,email,age,password,role}=req.body
+export const register = async (req, res) => {
+  try {
+    const { username, email, age, password, role } = req.body
 
-        const alreadyUser=await User.findOne({
-            $or:[{email:email.toLowerCase()},{username}]
-        })
+    const alreadyUser = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { username }
+      ]
+    })
 
-        if(alreadyUser)
-        {
-            return res.status(409).json({
-                success:false,
-                message:alreadyUser.email===email?"Email already registered":"Username already taken"
-            })
-        }
-
-        const user=await User.create({
-            username,
-            email,
-            age,
-            password,
-            role:role||"user"
-        })
-
-        const token=generateToken(user._id)
-
-        res.cookie("token",token,{
-            httpOnly:true,
-            secure:process.env.NODE_ENV==="production",
-            maxAge:7*24*60*60*1000
-        })
-
-        res.status(201).json({
-            success:true,
-            message:"User registered successfully",
-            data:{
-                user:{
-                    id:user._id,
-                    username:user.username,
-                    email:user.email,
-                    age:user.age,
-                    role:user.role
-                },
-                token
-            }
-        })
-    }catch(error){
-        res.status(500).json({
-            success:false,
-            message:"Server error",
-            error: error.message
-        })
+    if (alreadyUser) {
+      return res.status(409).json({
+        success: false,
+        message:
+          alreadyUser.email === email
+            ? "Email already registered"
+            : "Username already taken"
+      })
     }
+
+    const user = await User.create({
+      username,
+      email,
+      age,
+      password,
+      role: role || "user"
+    })
+
+    const token = generateToken(user._id)
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    })
+
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      data: {
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          age: user.age,
+          role: user.role
+        },
+        token
+      }
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message
+    })
+  }
 }
 
 export const login = async (req, res) => {
   try {
-    const { identifier, password } = req.body;
+    const { identifier, password } = req.body
+
+    const ipAddress = req.ip
+    const userAgent = req.headers["user-agent"]
 
     const user = await User.findOne({
       $or: [
         { email: identifier.toLowerCase() },
         { username: identifier }
       ]
-    });
+    })
 
     if (!user) {
+      await LoginAttempt.create({
+        identifier,
+        ipAddress,
+        userAgent,
+        success: false,
+        reason: "User not found"
+      })
+
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
-      });
+        message: "Invalid credentials"
+      })
     }
 
-    const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = await user.comparePassword(password)
 
     if (!isPasswordValid) {
+      await LoginAttempt.create({
+        user: user._id,
+        identifier,
+        ipAddress,
+        userAgent,
+        success: false,
+        reason: "Wrong password"
+      })
+
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
-      });
+        message: "Invalid credentials"
+      })
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id)
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    })
+
+    await LoginAttempt.create({
+      user: user._id,
+      identifier,
+      ipAddress,
+      userAgent,
+      success: true
+    })
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       data: {
         user: {
           id: user._id,
           username: user.username,
           email: user.email,
-          age:user.age,
+          age: user.age,
           role: user.role
         },
         token
       }
-    });
+    })
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error',
+      message: "Server error",
       error: error.message
-    });
+    })
   }
-};
+}
 
 export const getProfile = async (req, res) => {
   try {
@@ -129,28 +163,28 @@ export const getProfile = async (req, res) => {
       data: {
         user: req.user
       }
-    });
+    })
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error',
+      message: "Server error",
       error: error.message
-    });
+    })
   }
-};
+}
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie('token');
+    res.clearCookie("token")
     res.status(200).json({
       success: true,
-      message: 'Logged out successfully'
-    });
+      message: "Logged out successfully"
+    })
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error',
+      message: "Server error",
       error: error.message
-    });
+    })
   }
-};
+}
