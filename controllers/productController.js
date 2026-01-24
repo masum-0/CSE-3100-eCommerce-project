@@ -8,7 +8,7 @@ export const getProducts = async (req, res) => {
       maxPrice,
       sort,
       page = 1,
-      limit = 10
+      limit = 5
     } = req.query
 
     const query = {}

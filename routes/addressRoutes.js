@@ -8,7 +8,7 @@ import { addressSchema } from "../validators/addressValidator.js"
 const router = express.Router()
 
 
-router.post("/", authenticate, validate(addressSchema), createAddress)
+router.post("/", authenticate, createAddress)
 router.get("/", authenticate, getAddresses)
 
 

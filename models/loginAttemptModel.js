@@ -8,7 +8,7 @@ const loginAttemptSchema = new mongoose.Schema(
       default: null
     },
     identifier: {
-      type: String, // email or username
+      type: String,
       required: true
     },
     ipAddress: {
@@ -23,7 +23,7 @@ const loginAttemptSchema = new mongoose.Schema(
       required: true
     },
     reason: {
-      type: String // wrong password, user not found, blocked, etc
+      type: String
     }
   },
   { timestamps: true }
